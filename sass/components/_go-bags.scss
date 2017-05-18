@@ -1,0 +1,97 @@
+
+.go-bags-bag {
+  font-size: 70px;
+  font-weight: bold;
+  position: fixed;
+  z-index: 9000;
+  pointer-events: none;
+
+  &.bag-color-1 {
+    color: purple;
+  }
+  &.bag-color-2 {
+    color: #ff4c5f;
+  }
+  &.bag-color-3 {
+    color: #4aff82;
+  }
+  &.bag-color-4 {
+    color: #515dff;
+  }
+  &.bag-color-5 {
+    color: magenta;
+  }
+  &.bag-color-6 {
+    color: #292929;
+  }
+  &.bag-color-7 {
+    color: #daff5c;
+  }
+
+  &.bag-size-1 {
+    font-size: 60px;
+  }
+  &.bag-size-2 {
+    font-size: 110px;
+  }
+  &.bag-size-3 {
+    font-size: 160px;
+  }
+  &.bag-size-4 {
+    font-size: 90px;
+  }
+  &.bag-size-5 {
+    font-size: 130px
+  }
+  &.bag-size-6 {
+    font-size: 125px;
+  }
+  &.bag-size-7 {
+    font-size: 80px;
+  }
+
+  &.bag-font-1 {
+    font-family: 'Raleway', sans-serif;
+  }
+  &.bag-font-2 {
+    font-family: 'Roboto', sans-serif;
+  }
+  &.bag-font-3 {
+    font-family: 'Pacifico', cursive;
+  }
+  &.bag-font-4 {
+    font-family: 'Gloria Hallelujah', cursive;
+  }
+  &.bag-font-5 {
+    font-family: 'Permanent Marker', cursive;
+
+  }
+  &.bag-font-6 {
+    font-family: 'Shrikhand', cursive;
+  }
+
+  &.bag-style-1 {
+    text-transform: none;
+    transform: rotate(-15deg);
+  }
+  &.bag-style-2 {
+    text-transform: none;
+    transform: rotate(-35deg);
+  }
+  &.bag-style-3 {
+    text-transform: none;
+    transform: rotate(25deg);
+  }
+  &.bag-style-4 {
+    text-transform: uppercase;
+    transform: rotate(15deg);
+  }
+  &.bag-style-5 {
+    text-transform: uppercase;
+    transform: rotate(35deg);
+  }
+  &.bag-style-6 {
+    text-transform: uppercase;
+    transform: rotate(-25deg);
+  }
+}

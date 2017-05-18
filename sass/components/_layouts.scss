@@ -1,0 +1,80 @@
+
+.header,
+section.main {
+  @include content-width(default);
+}
+
+.page-wrap {
+}
+
+
+.header-wrap {
+  background: orange;
+  a {
+    color: white;
+    &:hover {
+      background: darken(orange, 3%);
+    }
+  }
+}
+
+.sarah-bio {
+  @include breakpoint(medium) {
+    display: flex;
+    align-items: center;
+    .sarah-headshot,
+    .sarah-content {
+      flex: 1;
+      width: 0;
+      margin-right: 30px;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+.sarah-headshot-wrapper {
+  width: 100%;
+  height: 0;
+  padding-top: 100%;
+  position: relative;
+  overflow: hidden;
+  z-index: 1000;
+  .img-wrapper {
+    display: block;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    .sarah-formal,
+    .sarah-bags {
+      border-radius: 1000px;
+      border: 3px solid black;
+    }
+  }
+  .eye {
+    position: absolute;
+    width: 20%;
+    transform: translate3d(-50%, -50%, 0);
+    animation: rotate-with-translate 1s infinite linear;
+    animation-direction: reverse;
+    transform-origin: left top;
+    &.left-eye {
+      left: 33%;
+      top: 42%;
+    }
+    &.right-eye {
+      left: 57%;
+      top: 40%;
+    }
+  }
+  .bags-on & {
+    .sarah-bags-wrapper {
+      animation: rotate 3s infinite linear;
+    }
+    .sarah-formal-wrapper {
+      display: none;
+    }
+  }
+}

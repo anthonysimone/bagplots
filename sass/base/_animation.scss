@@ -1,0 +1,22 @@
+// Animation declarations
+
+
+// Simple rotation
+@keyframes rotate {
+  0%{
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(360deg);
+  }
+}
+
+// Simple rotation with translate
+@keyframes rotate-with-translate {
+  0%{
+    transform: rotate(0deg) translate3d(-50%, -50%, 0);
+  }
+  100%{
+    transform: rotate(360deg) translate3d(-50%, -50%, 0);
+  }
+}

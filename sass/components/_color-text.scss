@@ -1,0 +1,14 @@
+
+.color-text {
+  transition: color 3000ms linear;
+  font-weight: bold;
+}
+
+h1.page-title {
+  font-size: 40px;
+  margin: 20px 0;
+  @include breakpoint(medium) {
+    font-size: 60px;
+    margin: 30px 0;
+  }
+}

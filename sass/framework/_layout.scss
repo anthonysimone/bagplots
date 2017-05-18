@@ -1,0 +1,66 @@
+////
+/// Framework - Layouts
+////
+
+$vertical-rhythm: (
+  element: (
+    default: 80px,
+    medium: 60px,
+    small: 40px,
+    tiny: 20px
+  ),
+  header: (
+    main: 40px,
+    sub: 25px,
+    article: 15px
+  )
+) !default;
+
+/// Mixin to handle vertical rhythm throughout the site. Try to always use this to set margins that aren't complete one offs
+/// @param {String} $rhythm-type - key in $vertical-rhythm map to get settings from config
+/// @param {String} $rhythm-space-key - key within the rhythm type, determines the size of the space
+/// @param {String} $margin-position [bottom] - determines which margin is set, try to use bottom NEARLY ALWAYS for simplest maintenance
+@mixin vertical-rhythm($rhythm-type, $rhythm-space-key, $margin-position: bottom) {
+  margin-#{$margin-position}: key($vertical-rhythm, $rhythm-type, $rhythm-space-key);
+}
+
+
+$layouts: (
+  default: (
+    max-width: 1000px,
+    padding: (
+      small: 15px,
+      medium: 30px
+    )
+  ),
+  full-width: (
+    max-width: 100%,
+    padding: 0
+  )
+) !default;
+
+/// Mixin to handle content widths throughout the site. Try to ALWAYS use this to set content width patterns throughout the site.
+/// @param {String} $layout-key - key in $vertical-rhythm map to get settings from config
+/// @param {Boolean} $collapse [false] - remove padding if `true`
+@mixin content-width($layout-key, $collapse: false) {
+  $layout: extend-in-map($layouts, $layout-key);
+
+  max-width: key($layout, max-width);
+  @include left-right(margin, auto);
+
+  @if $collapse != true {
+    @if type-of(key($layout, padding)) == map {
+      $paddings: key($layout, padding);
+
+      @each $size, $padding in $paddings {
+        @include breakpoint($size) {
+          @include left-right(padding, $padding);
+        }
+      }
+
+    } @else {
+      @include left-right(padding, key($layout, padding));
+    }
+  }
+
+};
