@@ -1,9 +1,14 @@
 !function ($) {
   "use strict";
 
+  // init variables
+  var xAxis, yAxis, allBagplots;
+
+  var bagplotElement = d3.select('#basic-bagplot');
+
   // set the dimensions and margins of the graph
   var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = 960 - margin.left - margin.right,
+    width = parseInt(bagplotElement.style('width')) - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
 // set the ranges
@@ -11,34 +16,16 @@
   var y = d3.scaleLinear().range([height, 0]);
 
   var allData = [];
-// define the line
-//   var valueline = d3.line()
-//     .x(function (d) {
-//       return x(d.x);
-//     })
-//     .y(function (d) {
-//       return y(d.y);
-//     });
 
 // append the svg obgect to the body of the page
 // appends a 'group' element to 'svg'
 // moves the 'group' element to the top left margin
-  var svg = d3.select("#basic-bagplot").append("svg")
+  var svg = bagplotElement.append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform",
       "translate(" + margin.left + "," + margin.top + ")");
-
-
-  // d3.csv("./bags/bagplot1.csv", function (error, data) {
-  //   var bag1 = data.filter(function(d) { if (d["bag_x"] && d["bag_y"]) { return d; } })
-  //                   .map(function(d) { return [ +d["bag_x"], +d["bag_y"] ]; });
-  //   var fence1 = data.filter(function(d) { if (d["fence_x"] && d["fence_y"]) { return d; } })
-  //                     .map(function(d) { return [ +d["fence_x"], +d["fence_y"] ]; });
-  //   var center1 = data.filter(function(d) { if (d["center_x"] && d["center_y"]) { return d; } })
-  //                     .map(function(d) { return [ +d["center_x"], +d["center_y"] ]; });
-  // });
 
 
 // Get the data
@@ -113,7 +100,7 @@
                               .concat(bag6).concat(fence6).concat(center6);
     console.log(allBagplotDots);
 
-    var allBagplots = [
+    allBagplots = [
       {
         bag: bag1,
         fence: fence1,
@@ -186,15 +173,22 @@
     addHull(allBagplots[3], "blue", 0.5, 3);
     addHull(allBagplots[4], "pink", 0.5, 4);
 
+    // Create x Axis
+    xAxis = d3.axisBottom(x);
+
+    // Create y Axis
+    yAxis = d3.axisLeft(y);
 
     // Add the X Axis
     svg.append("g")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+      .classed('axis x', true)
+      .call(xAxis);
 
     // Add the Y Axis
     svg.append("g")
-      .call(d3.axisLeft(y));
+      .classed('axis y', true)
+      .call(yAxis);
 
     var toggles = svg.append("g")
       .attr("class", "toggles");
@@ -248,7 +242,76 @@
       .attr("cy", function (d) {
         return y(d.y);
       });
+  }
 
+  function updateHull(bagplot, i) {
+    var bagplotGroup = svg.selectAll("bagplot-" + i);
+
+    // bag
+    bagplotGroup.selectAll(".bag-hull")
+      .datum(d3.polygonHull(bagplot.bagArray.map(function(d) { return [ x(d[0]), y(d[1]) ]; })))
+      .attr("d", function(d) { return "M" + d.join("L") + "Z"; });
+
+    // fence
+    bagplotGroup.selectAll(".fence-hull")
+      .datum(d3.polygonHull(bagplot.fenceArray.map(function(d) { return [ x(d[0]), y(d[1]) ]; })))
+      .attr("d", function(d) { return "M" + d.join("L") + "Z"; });
+
+    // center
+    bagplotGroup.selectAll(".center")
+      .data(bagplot.center)
+      // .enter().append("circle")
+      .attr("cx", function (d) {
+        return 10;
+        // return x(d.x);
+      })
+      .attr("cy", function (d) {
+        return y(d.y);
+      });
+  }
+
+  d3.select(window).on('resize', resize);
+
+  /*
+   Resize
+   */
+  function resize() {
+
+    // Find the new window dimensions
+    width = parseInt(bagplotElement.style("width")) - margin.left - margin.right;
+
+    // Update the range of the scale with new width/height
+    x.range([0, width]);
+    y.range([height, 0]);
+
+    // // Update the axis with the new scale
+    svg.selectAll('g.x.axis')
+      .call(xAxis);
+    // svg.selectAll('g.y.axis')
+    //   .call(yAxis);
+
+    updateHull(allBagplots[0], 0);
+    updateHull(allBagplots[1], 1);
+    updateHull(allBagplots[2], 2);
+    updateHull(allBagplots[3], 3);
+    updateHull(allBagplots[4], 4);
+
+
+    // // Recalculate and update the dots
+    // graphInner.selectAll("circle.dotWPY")
+    //   .attr("cx", function (d) {
+    //     return xScale(d.x);
+    //   })
+    //   .attr("cy", function (d) {
+    //     return yScale(d.y);
+    //   });
+    //
+    // graphInner.selectAll("path.areaWPY")
+    //   .attr("d", function (d) {
+    //     return area(d);
+    //   });
+    //
+    // styleTicks();
   }
 
 
