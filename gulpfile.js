@@ -18,6 +18,7 @@ var source = require('vinyl-source-stream');
 var babel = require('gulp-babel');
 var pump = require('pump');
 var gutil = require('gulp-util');
+var bs = require('browser-sync').create(); 
 
 /************************
  * CONFIGURATION
@@ -129,6 +130,14 @@ gulp.task('scripts', function() {
     }))
     .pipe(gulp.dest('./js/dist/'))
     .pipe(livereload())
+});
+
+gulp.task('bs', function() {
+    bs.init({
+        server: {
+            baseDir: "./"
+        }
+    });
 });
 
 gulp.task('watch', function() {
