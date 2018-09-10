@@ -16,8 +16,8 @@
 
 </head>
 <body>
-  <div class="page-wrap">
 
+  <div class="page-wrap">
     <div class="header-wrap">
       <header class="header">
         <ul class="menu">
@@ -31,8 +31,19 @@
 
     <div class="main-wrap">
       <section class="main">
-        <h1 class="page-title">Basic Scatterplot</h1>
-        <div id="basic-scatterplot"></div>
+        <h1 class="page-title">Bagplot with Reformatted Data</h1>
+        <h3>Data Formatting</h3>
+        <p>This expects data to be provided as a csv file with column headers as follows:</p>
+        <ul>
+          <li>`bag_x`</li>
+          <li>`bag_y`</li>
+          <li>`fence_x`</li>
+          <li>`fence_y`</li>
+          <li>`center_x`</li>
+          <li>`center_y`</li>
+        </ul>
+        <p>Each row is an entirely new bag. So you should provide a single csv with all the bags that should be visualized at once. Each "cell" will then be a comma separated list of all the necessary values. So for instance, `bag_x` will have all of the x coordinates of the points that create the bag, and `bag_y` will have all of the y coordinates. This should be a comma separated string and each pair should be the same length. For example, the csv that creates this bagplot can be viewed <a href="./bags/all-bagplots-reformat.csv" download>here</a>.</p>
+        <div id="bagplot-data-reformat"></div>
       </section>
     </div>
 
@@ -41,6 +52,6 @@
 <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.js"></script>
-<script src="js/d3/basic-scatterplot.js"></script>
+<script src="js/d3/bagplot-data-reformat.js"></script>
 </body>
 </html>

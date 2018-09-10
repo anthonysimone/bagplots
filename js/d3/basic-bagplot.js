@@ -49,16 +49,6 @@
     var center2 = data.filter(function(d) { if (d["s2_center_x"] && d["s2_center_y"]) { return d; } })
       .map(function(d) { return { "x": +d["s2_center_x"], "y": +d["s2_center_y"] }; });
 
-    // bagplot3
-    // var bag3 = data.filter(function(d) { if (d["s3_bag_x"] && d["s3_bag_y"]) { return d; } })
-    //   .map(function(d) { return { "x": +d["s3_bag_x"], "y": +d["s3_bag_y"] }; });
-    // var bag3array = bag3.map(function(d) { return [ +d["x"], +d["y"] ]; });
-    // var fence3 = data.filter(function(d) { if (d["s3_fence_x"] && d["s3_fence_y"]) { return d; } })
-    //   .map(function(d) { return { "x": +d["s3_fence_x"], "y": +d["s3_fence_y"] }; });
-    // var fence3array = fence3.map(function(d) { return [ +d["x"], +d["y"] ]; });
-    // var center3 = data.filter(function(d) { if (d["s3_center_x"] && d["s3_center_y"]) { return d; } })
-    //   .map(function(d) { return { "x": +d["s3_center_x"], "y": +d["s3_center_y"] }; });
-
     // bagplot4
     var bag4 = data.filter(function(d) { if (d["s4_bag_x"] && d["s4_bag_y"]) { return d; } })
       .map(function(d) { return { "x": +d["s4_bag_x"], "y": +d["s4_bag_y"] }; });
@@ -111,13 +101,6 @@
         bagArray: bag2array,
         fenceArray: fence2array
       },
-      // {
-      //   bag: bag3,
-      //   fence: fence3,
-      //   center: center3,
-      //   bagArray: bag3array,
-      //   fenceArray: fence3array
-      // },
       {
         bag: bag4,
         fence: fence4,
@@ -141,6 +124,8 @@
       }
     ];
 
+    console.log(allBagplots);
+    
     // Create x Axis
     xAxis = d3.axisBottom(x);
 
