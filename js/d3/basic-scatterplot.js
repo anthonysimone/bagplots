@@ -42,9 +42,7 @@
 
 
 // Get the data
-  d3.csv("./bags/bagplot1.csv", function (error, data) {
-    if (error) throw error;
-
+  d3.csv("./bags/bagplot1.csv").then(function (data) {
     var bag1 = data.filter(function(d) { if (d["bag_x"] && d["bag_y"]) { return d; } })
       .map(function(d) { return { "x": +d["bag_x"], "y": +d["bag_y"] }; });
     var bag1array = bag1.map(function(d) { return [ +d["x"], +d["y"] ]; });
@@ -95,7 +93,6 @@
     // Add the Y Axis
     svg.append("g")
       .call(d3.axisLeft(y));
-
   });
 
   function addHull(points, classes, color, opacity) {
