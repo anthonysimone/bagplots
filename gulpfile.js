@@ -17,7 +17,8 @@ var sassdoc = require('sassdoc');
 var source = require('vinyl-source-stream');
 var babel = require('gulp-babel');
 var pump = require('pump');
-var gutil = require('gulp-util');
+var log = require('fancy-log');
+var colors = require('ansi-colors');
 var bs = require('browser-sync').create(); 
 
 /************************
@@ -63,7 +64,8 @@ var scriptsSrc = [
  * TASKS
  ************************/
 
-gulp.task('styles', function() {
+// Compile styles
+function styles(done) {
   gulp.src(stylesSrc)
     .pipe(sourcemaps.init())
     .pipe(sass({
@@ -88,64 +90,70 @@ gulp.task('styles', function() {
     }))
     .pipe(gulp.dest('./css/'))
     .pipe(livereload());
-});
 
-gulp.task('wysiwyg', function() {
-  gulp.src('./sass/wysiwyg.scss')
-    .pipe(sass({
-      includePaths: includePaths
-    }))
+    done();
+}
 
-    // Catch any SCSS errors and prevent them from crashing gulp
-    .on('error', function (error) {
-      console.error(error);
-      this.emit('end');
-    })
-    .pipe(autoprefixer('last 2 versions'))
-    .pipe(concat('wysiwyg.css'))
-    .pipe(cleanCss({
-      // turn off minifyCss sourcemaps so they don't conflict with gulp-sourcemaps and includePaths
-      sourceMap: false
-    }))
-    .pipe(gulp.dest('./css/dist/'))
-});
-
-gulp.task('sassdoc', function () {
+// Compile sassdocs
+function sassdoc(done) {
   return gulp.src(sassdocSrc)
     .pipe(sassdoc());
-});
 
-gulp.task('scripts', function() {
+  done();
+}
+
+// Compile scripts
+function scripts(done) {
   gulp.src(scriptsSrc)
     .pipe(sourcemaps.init())
-    .pipe(babel())
+    .pipe(babel({
+      presets: ['@babel/env']
+    }))
     .pipe(concat('theme.js'))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest('./js/dist/'))
     .pipe(livereload())
     .pipe(uglify())
-    .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
+    .on('error', function (err) { log.error(err.toString()); })
     .pipe(rename({
       extname: '.min.js'
     }))
     .pipe(gulp.dest('./js/dist/'))
-    .pipe(livereload())
-});
+    .pipe(livereload());
 
-gulp.task('bs', function() {
-    bs.init({
-        server: {
-            baseDir: "./"
-        }
-    });
-});
+  done();
+}
 
-gulp.task('watch', function() {
+// Run browser sync
+function bsync(done) {
+  bs.init({
+    server: {
+      baseDir: "./"
+    }
+  });
+
+  done();
+}
+
+// Start watcher
+function watch(done) {
   if (autoReload) {
     livereload.listen();
   }
   gulp.watch('./sass/**/*.scss', ['styles', 'wysiwyg']);
   gulp.watch('./js/src/*.js', ['scripts']);
-});
 
-gulp.task('default', ['styles', 'scripts', 'wysiwyg']);
+  done();
+}
+
+gulp.task(scripts);
+gulp.task(styles);
+gulp.task(sassdoc);
+gulp.task(bsync);
+gulp.task(watch);
+
+const defaultCompile = gulp.parallel(scripts, styles);
+gulp.task('default', defaultCompile);
+// gulp.task('default', ['styles', 'scripts']);
+
+// gulp.task('default', gulp.series(['styles', 'scripts']));
