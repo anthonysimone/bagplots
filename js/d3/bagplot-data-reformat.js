@@ -117,16 +117,15 @@ d3.csv("./bags/all-bagplots-reformat.csv").then(function (data) {
       .classed("toggle-select", true)
       .on("change", function() {
         // Get the active element
-        let currentBag = d3.select(".bagplot-"+this.value);
-        if (this.value !== 'none') {
-          currentBag.moveToFront();
+        if (this.value === 'all') {
+          d3.selectAll('g.plot-container').transition().style("opacity", 1);
+        } else {
+          let currentBag = d3.select(".bagplot-"+this.value).moveToFront().node();
+          d3.selectAll('g.plot-container').transition().style('opacity',function () {
+            // Compare each element in selection to the current element
+            return (this === currentBag) ? 1.0 : 0.2;
+          });
         }
-        d3.selectAll('g.plot-container').transition().style('opacity',function () {
-          // Compare each element in selection to the current element
-          return (this === currentBag.node()) ? 1.0 : 0.3;
-        });
-
-        // d3.select(".bagplot-" + this.value).moveToFront();
       });;
 
   redraw();
