@@ -28,15 +28,14 @@ var bs = require('browser-sync').create();
 var autoReload = true;
 
 var paths = {
-  bowerDir: './bower_components'
+  npmDir: './node_modules'
 };
 
 var includePaths = [
   // Add paths to any sass @imports that you will use from bower_components here
   // Adding paths.bowerDir will allow you to target any bower package folder as an include path
   // for generically named assets
-  paths.bowerDir,
-  paths.bowerDir + '/foundation-sites/scss'
+  paths.npmDir + '/foundation-sites/scss'
 ];
 
 var stylesSrc = [
@@ -52,9 +51,9 @@ var sassdocSrc = [
 
 var scriptsSrc = [
   // add bower_component scripts here
-  paths.bowerDir + '/foundation-sites/js/foundation.core.js',
+  paths.npmDir + '/foundation-sites/js/foundation.core.js',
 
-  paths.bowerDir + '/foundation-sites/js/foundation.util.mediaQuery.js',
+  paths.npmDir + '/foundation-sites/js/foundation.util.mediaQuery.js',
 
   './js/lib/foundation-init.js',
   './js/src/*.js'
