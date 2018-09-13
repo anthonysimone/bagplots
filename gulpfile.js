@@ -20,6 +20,8 @@ var pump = require('pump');
 var log = require('fancy-log');
 var colors = require('ansi-colors');
 var bs = require('browser-sync').create(); 
+var webpack = require('webpack-stream');
+var plumber = require('gulp-plumber');
 
 /************************
  * CONFIGURATION
@@ -57,6 +59,10 @@ var scriptsSrc = [
 
   './js/lib/foundation-init.js',
   './js/src/*.js'
+];
+
+var webpackEntryPoints = [
+  './js/src/theme.js'
 ];
 
 /************************
@@ -102,7 +108,7 @@ function sassdoc(done) {
 }
 
 // Compile scripts
-function scripts(done) {
+function oldscripts(done) {
   gulp.src(scriptsSrc)
     .pipe(sourcemaps.init())
     .pipe(babel({
@@ -123,6 +129,16 @@ function scripts(done) {
   done();
 }
 
+function scripts(done) {
+  gulp.src(webpackEntryPoints)
+    .pipe(plumber())
+    .pipe(webpack( require('./webpack.config.js') ))
+    .pipe(gulp.dest('./dist/js/'))
+    .pipe(livereload());
+
+    done();
+}
+
 // Run browser sync
 function bsync(done) {
   bs.init({
@@ -131,8 +147,8 @@ function bsync(done) {
     }
   });
 
-  gulp.watch("./src/**/*.js", scripts).on('change', bs.reload);
-  gulp.watch("./src/**/*.scss", styles).on('change', bs.reload);
+  gulp.watch("./js/**/*.js", scripts).on('change', bs.reload);
+  gulp.watch("./sass/**/*.scss", styles).on('change', bs.reload);
   gulp.watch("./*.html").on('change', bs.reload);
 
   done();
@@ -143,12 +159,13 @@ function watch(done) {
   if (autoReload) {
     livereload.listen();
   }
-  gulp.watch('./sass/**/*.scss', ['styles', 'wysiwyg']);
-  gulp.watch('./js/src/*.js', ['scripts']);
+  gulp.watch('./sass/**/*.scss', styles);
+  gulp.watch('./js/**/*.js', scripts);
 
   done();
 }
 
+gulp.task(oldscripts);
 gulp.task(scripts);
 gulp.task(styles);
 gulp.task(sassdoc);

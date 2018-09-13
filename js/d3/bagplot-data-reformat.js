@@ -1,4 +1,4 @@
-"use strict";
+import * as d3 from "d3";
 
 // Add D3 extensions that will be used
 d3.selection.prototype.moveToFront = function() {  
@@ -25,7 +25,7 @@ var bagplotElement = d3.select('#bagplot-data-reformat'),
 var previousData = d3.local();
 
 // set the dimensions and margins of the graph
-var margin = {top: 10, right: 20, bottom: 50, left: 60},
+var margin = {top: 10, right: 20, bottom: 40, left: 55},
   width = parseInt(bagplotElement.style('width')) - margin.left - margin.right,
   height = 500 - margin.top - margin.bottom;
 
@@ -61,11 +61,13 @@ svg.append("g")
 svg.append("text")
   .attr("text-anchor", "middle")
   .attr("transform", "translate("+(-margin.left+20)+","+(height/2)+")rotate(-90)")
+  .attr("font-size", 14)
   .text("Y-axis Label");
 svg.append("text")
   .attr("text-anchor", "middle")
   .attr("transform", "translate("+(width/2)+","+(height+(margin.bottom))+")")
-  .text("X-axis Label");
+  .text("X-axis Label")
+  .attr("font-size", 14);
 
 
 // Create toggles
@@ -353,14 +355,18 @@ function generateRandomBag(xMin, xMax, yMin, yMax, distribution, fenceSpread) {
   // create our new empty bag object
   let bag = {bagArray: [], fenceArray: [], center: []};
 
-  // generate points for the bag and the fence
+  // generate points for the fence first
   for (let i = 0; i < 20; i++) {
-    bag.bagArray.push(generatePoint(xMin, xMax, yMin, yMax, distribution));
     bag.fenceArray.push(generateFencePoint(xMin, xMax, yMin, yMax, distribution, fenceSpread));
   }
 
-  // Generate a center point that falls within the bag hull
-  bag.center.push(generateCenter(xMin, xMax, yMin, yMax, bag));
+  // Generate points for the bag
+  for (let j = 0; j < 20; j++) {
+    bag.bagArray.push(generateConstrainedPoint(xMin, xMax, yMin, yMax, distribution, bag.fenceArray));
+  }
+
+  // Generate center
+  bag.center.push(generateConstrainedPoint(xMin, xMax, yMin, yMax, distribution, bag.bagArray));
 
   return bag;
 }
@@ -387,33 +393,33 @@ function generateFencePoint(xMin, xMax, yMin, yMax, distribution = 1, fenceSprea
       yRange = yMax - yMin;
 
   // do something to get a point
-  let point = [Math.floor(Math.pow(Math.random(), distribution) * xRange * fenceSpread) + xMin, Math.floor(Math.pow(Math.random(), distribution) * yRange * fenceSpread * 100)/100 + yMin];
+  return [Math.floor(Math.pow(Math.random(), distribution) * xRange * fenceSpread) + xMin, Math.floor(Math.pow(Math.random(), distribution) * yRange * fenceSpread * 100)/100 + yMin];
   // check to see if point satisfies stuff
-  if ((point[0] >= xMax || point[0] <= xMin) && (point[1] >= yMax || point[1] <= yMin)) {
-    return point;
-  } else {
-    return generateFencePoint(xMin, xMax, yMin, yMax, distribution, fenceSpread);
-  }
 }
 
-function generateCenter(xMin, xMax, yMin, yMax, bag) {
-  // Generate a hull from the bag array, a new center, and a copy of the array
-  let bagHull = d3.polygonHull(bag.bagArray),
-      center = generatePoint(xMin, xMax, yMin, yMax, 1),
-      arrayCopy = bag.bagArray.slice();
-
-  // Add the new center to our arrayCopy and generate a hull with the center point as well
-  arrayCopy.push(center);
-  let newHull = d3.polygonHull(arrayCopy);
+function generateConstrainedPoint(xMin, xMax, yMin, yMax, distribution, constraintPointsArray) {
+  // Generate a new point to test
+  let point = generatePoint(xMin, xMax, yMin, yMax, distribution);
 
   // Compare the two hulls, if they're equal our center lays within it! If not, try again
-  if (bagHull.length === newHull.length && bagHull.every((value, index) => value === newHull[index])) {
-    return center;
+  if (isPointWithinGeneratedHull(point, constraintPointsArray)) {
+    return point;
   } else {
-    return generateCenter(xMin, xMax, yMin, yMax, bag);
+    return generateConstrainedPoint(xMin, xMax, yMin, yMax, distribution, constraintPointsArray);
   }
 }
 
+function isPointWithinGeneratedHull(point, points) {
+  let hull = d3.polygonHull(points),
+    newHull = points.slice();
+
+  // Add the point to the cloned array and generate a new hull  
+  newHull.push(point);
+  newHull = d3.polygonHull(newHull);
+
+  // Compare the hull created from the existing points with the hull generated with the test point added
+  return (hull.length === newHull.length && hull.every((value, index) => value === newHull[index]));
+}
 
 
 
