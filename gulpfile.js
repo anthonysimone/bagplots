@@ -131,6 +131,10 @@ function bsync(done) {
     }
   });
 
+  gulp.watch("./src/**/*.js", scripts).on('change', bs.reload);
+  gulp.watch("./src/**/*.scss", styles).on('change', bs.reload);
+  gulp.watch("./*.html").on('change', bs.reload);
+
   done();
 }
 

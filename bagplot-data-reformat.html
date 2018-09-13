@@ -43,7 +43,21 @@
           <li>`center_y`</li>
         </ul>
         <p>Each row is an entirely new bag. So you should provide a single csv with all the bags that should be visualized at once. Each "cell" will then be a comma separated list of all the necessary values. So for instance, `bag_x` will have all of the x coordinates of the points that create the bag, and `bag_y` will have all of the y coordinates. This should be a comma separated string and each pair should be the same length. For example, the csv that creates this bagplot can be viewed <a href="./bags/all-bagplots-reformat.csv" download>here</a>.</p>
-        <div id="bagplot-data-reformat"></div>
+        <div class="chart-container grid-x grid-padding-x">
+          <div class="chart-column cell medium-9">
+            <div id="bagplot-data-reformat"></div>
+          </div>
+          <div class="legend-column cell medium-3">
+            <div id="bagplot-data-reformat-legend">
+              <div id="data-set-toggle">
+                <select id="data-set">
+                  <option value="1" selected>Set 1</option>
+                  <option value="random">Random Data</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </div>
 

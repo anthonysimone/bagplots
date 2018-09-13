@@ -156,4 +156,7 @@
 @include foundation-forms();
 @include foundation-table();
 
+// Include the xy grid for ease of use
+@include foundation-xy-grid-classes;
+
 @include themekit-icons();
